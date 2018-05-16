@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PushUpApp.Pages.StartPage">
+    <StackLayout>
+        <Label 
+            FontSize="Large"
+            Text="PushUp Application"
+            HorizontalOptions="Center" />
+        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label
+                FontSize="Medium"
+                Grid.Column="0" 
+                Text="X: " />
+            <Label 
+                FontSize="Medium"
+                Grid.Column="1" 
+                x:Name="_xPosition" />
+
+            <Label
+                FontSize="Medium"
+                Grid.Column="2" 
+                Text="Y: " />
+            <Label 
+                FontSize="Medium"
+                Grid.Column="3" 
+                x:Name="_yPosition" />
+
+            <Label
+                FontSize="Medium"
+                Grid.Column="4" 
+                Text="Z: " />
+            <Label 
+                FontSize="Medium"
+                Grid.Column="5" 
+                x:Name="_zPosition" />
+        </Grid>
+
+        <Label 
+            FontSize="Large"
+            Text="Counters"
+            HorizontalOptions="Center" />
+        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Label
+                Grid.Column="0"
+                FontSize="Medium"
+                Text="Push-ups: " />
+            <Label
+                Grid.Column="1"
+                FontSize="Medium"
+                Text="0"
+                x:Name="_upPositionLabel" />
+        </Grid>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Label
+                Grid.Column="0"
+                FontSize="Medium"
+                Text="Push-downs: " />
+            <Label
+                Grid.Column="1"
+                FontSize="Medium"
+                Text="0"
+                x:Name="_downPositionLabel" />
+        </Grid>
+        
+        <Button
+            x:Name="_settingsButton"
+            Text="Settings"
+            VerticalOptions="EndAndExpand"/>
+    </StackLayout>
+</ContentPage>

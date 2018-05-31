@@ -4,30 +4,32 @@ using Xamarin.Forms.Internals;
 
 namespace PushUpApp.Services
 {
-    class AcceleratorReader : IAcceleratorReader
+    class AcceleratorReader : IAcceleratorObtainer
     {
-        private readonly IDeviceMotion _deviceMotion;
         private readonly IList<IAcceleratorSubscriber> _subscribers;
-        public IEnumerable<IAcceleratorSubscriber> Subscribers => _subscribers;
+        private readonly ThreeDimPosition _position;
+
 
         public AcceleratorReader(IDeviceMotion deviceMotion)
         {
-            _deviceMotion = deviceMotion;
-            _deviceMotion.Start(MotionSensorType.Accelerometer, MotionSensorDelay.Ui);
-            _deviceMotion.SensorValueChanged += DeviceMotionOnSensorValueChanged;
+            RegisterAccelerometer(deviceMotion);
             _subscribers = new List<IAcceleratorSubscriber>();
-            Position = new ThreeDimPosition();
+            _position = new ThreeDimPosition();
         }
 
-        public ThreeDimPosition Position { get; set; }
+        private void RegisterAccelerometer(IDeviceMotion deviceMotion)
+        {
+            deviceMotion.Start(MotionSensorType.Accelerometer, MotionSensorDelay.Ui);
+            deviceMotion.SensorValueChanged += DeviceMotionOnSensorValueChanged;
+        }
 
         private void DeviceMotionOnSensorValueChanged(object sender, SensorValueChangedEventArgs e)
         {
             if (e.SensorType == MotionSensorType.Accelerometer)
             {
-                Position.X = ((MotionVector) e.Value).X;
-                Position.Y = ((MotionVector)e.Value).Y;
-                Position.Z = ((MotionVector)e.Value).Z;
+                _position.X = ((MotionVector) e.Value).X;
+                _position.Y = ((MotionVector)e.Value).Y;
+                _position.Z = ((MotionVector)e.Value).Z;
             }            
 
             NotifySubscribers();
@@ -35,7 +37,7 @@ namespace PushUpApp.Services
 
         public void NotifySubscribers()
         {
-            _subscribers.ForEach(x => x.Update(Position));
+            _subscribers.ForEach(x => x.Update(this, _position));
         }
 
         public void AddSubscriber(IAcceleratorSubscriber subscriber)

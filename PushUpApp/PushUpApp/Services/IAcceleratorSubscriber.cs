@@ -2,6 +2,6 @@
 {
     public interface IAcceleratorSubscriber
     {
-        void Update(ThreeDimPosition position);
+        void Update(IAcceleratorObtainer sender, object arg);
     }
 }

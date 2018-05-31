@@ -12,30 +12,30 @@ namespace PushUpApp.Pages
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class SettingsPage : ContentPage
 	{
-	    private readonly IAcceleratorReader _acceleratorReader;
+	    private readonly IAcceleratorObtainer _acceleratorObtainer;
 	    private readonly PushUpPositions _pushUpPositions;
 	    public ThreeDimPosition UpPosition { get; set; }
 	    public ThreeDimPosition DownPosition { get; set; }
 
-        public SettingsPage(IAcceleratorReader acceleratorReader, PushUpPositions pushUpPositions)
+        public SettingsPage(IAcceleratorObtainer acceleratorObtainer, PushUpPositions pushUpPositions)
 		{
 		    InitializeComponent ();
             _backButton.Clicked += OnBackButtonClick;
             _upPositionButton.Clicked += OnUpPositionButtonClick;
             _downPositionButton.Clicked += OnDownPositionButtonClick;
-		    _acceleratorReader = acceleratorReader;
+		    _acceleratorObtainer = acceleratorObtainer;
 		    _pushUpPositions = pushUpPositions;
         }
 
         private async void OnBackButtonClick(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new StartPage());
+            await Navigation.PushAsync(new TrainingPageView());
         }
 
         private async void OnUpPositionButtonClick(object sender, EventArgs e)
         {
             await Task.Delay(3000);
-            var position = _acceleratorReader.Position;
+            var position = _acceleratorObtainer.Position;
 
             _pushUpPositions.Up = new ThreeDimPosition(position.X, position.Y, position.Z);
         }
@@ -43,7 +43,7 @@ namespace PushUpApp.Pages
         private async void OnDownPositionButtonClick(object sender, EventArgs e)
         {
             await Task.Delay(3000);
-            var position = _acceleratorReader.Position;
+            var position = _acceleratorObtainer.Position;
             _pushUpPositions.Down = new ThreeDimPosition(position.X, position.Y, position.Z);
         }
     }

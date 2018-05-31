@@ -12,7 +12,7 @@ namespace PushUpApp
 		{
 			InitializeComponent();
 
-            MainPage = new NavigationPage(new StartPage());
+            MainPage = new NavigationPage(new TrainingPageView());
 		}
 
 		protected override void OnStart ()

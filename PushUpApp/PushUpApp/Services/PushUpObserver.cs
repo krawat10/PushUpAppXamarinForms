@@ -1,8 +1,8 @@
 ﻿using System;
+using DeviceMotion.Plugin.Abstractions;
 
 namespace PushUpApp.Services
 {
-
     class PushUpObserver : IAcceleratorSubscriber
     {
         private readonly PushUpPositions _pushUpPositions;
@@ -15,9 +15,9 @@ namespace PushUpApp.Services
             _pushUpPositions = pushUpPositions;
         }
 
-        public void Update(IAcceleratorObtainer sender, object arg)
+        public void Update(IAcceleratorObservable sender, object arg)
         {
-            if (arg is ThreeDimPosition position)
+            if (arg is MotionVector position)
             {
                 if (position.IsSimilarPositionTo(_pushUpPositions.Up) && !_wasUpPosition)
                 {

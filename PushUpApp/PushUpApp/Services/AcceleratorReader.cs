@@ -4,40 +4,20 @@ using Xamarin.Forms.Internals;
 
 namespace PushUpApp.Services
 {
-    class AcceleratorReader : IAcceleratorObtainer
+    internal class AcceleratorReader : IAcceleratorObservable, IAcceleratorReader
     {
         private readonly IList<IAcceleratorSubscriber> _subscribers;
-        private readonly ThreeDimPosition _position;
-
 
         public AcceleratorReader(IDeviceMotion deviceMotion)
         {
-            RegisterAccelerometer(deviceMotion);
+            Position = new MotionVector();
             _subscribers = new List<IAcceleratorSubscriber>();
-            _position = new ThreeDimPosition();
-        }
-
-        private void RegisterAccelerometer(IDeviceMotion deviceMotion)
-        {
-            deviceMotion.Start(MotionSensorType.Accelerometer, MotionSensorDelay.Ui);
-            deviceMotion.SensorValueChanged += DeviceMotionOnSensorValueChanged;
-        }
-
-        private void DeviceMotionOnSensorValueChanged(object sender, SensorValueChangedEventArgs e)
-        {
-            if (e.SensorType == MotionSensorType.Accelerometer)
-            {
-                _position.X = ((MotionVector) e.Value).X;
-                _position.Y = ((MotionVector)e.Value).Y;
-                _position.Z = ((MotionVector)e.Value).Z;
-            }            
-
-            NotifySubscribers();
+            RegisterAccelerometer(deviceMotion);
         }
 
         public void NotifySubscribers()
         {
-            _subscribers.ForEach(x => x.Update(this, _position));
+            _subscribers.ForEach(x => x.Update(this, Position));
         }
 
         public void AddSubscriber(IAcceleratorSubscriber subscriber)
@@ -49,5 +29,27 @@ namespace PushUpApp.Services
         {
             _subscribers.Remove(subscriber);
         }
+
+        public MotionVector Position { get; set; }
+
+        private void RegisterAccelerometer(IDeviceMotion deviceMotion)
+        {
+            deviceMotion.Start(MotionSensorType.Accelerometer, MotionSensorDelay.Ui);
+            deviceMotion.SensorValueChanged += DeviceMotionOnSensorValueChanged;
+        }
+
+        private void DeviceMotionOnSensorValueChanged(object sender, SensorValueChangedEventArgs e)
+        {
+            if (e.SensorType == MotionSensorType.Accelerometer)
+            {
+                Position = (MotionVector) e.Value;
+            }
+            NotifySubscribers();
+        }
+    }
+
+    public interface IAcceleratorReader
+    {
+        MotionVector Position { get; set; }
     }
 }

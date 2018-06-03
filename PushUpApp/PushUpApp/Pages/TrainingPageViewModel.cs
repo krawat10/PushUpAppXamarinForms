@@ -9,12 +9,20 @@ namespace PushUpApp.Pages
     internal class TrainingPageViewModel : ViewModel
     {
         private readonly AcceleratorReader _acceleratorReader;
-        private int _upCount;
+        private readonly PushUpPositions PushUpPositions;
         private int _downCount;
+        private int _upCount;
 
         public TrainingPageViewModel()
         {
             _acceleratorReader = new AcceleratorReader(CrossDeviceMotion.Current);
+            LoadSavedPositionsAsync();
+
+            var pushUpObserver = new PushUpObserver(PushUpPositions);
+            pushUpObserver.OnPositionReached = OnPositionReached;
+
+            _acceleratorReader.AddSubscriber(pushUpObserver);
+
             OnSettingClickCommand = new Command(OnSettingClick);
         }
 
@@ -40,25 +48,37 @@ namespace PushUpApp.Pages
 
         public ICommand OnSettingClickCommand { get; set; }
 
-        public async void OnSettingClick()
-        {
-            //Navigation.PushAsync(new SettingsPage())
-        }
-
-        private void OnPositionReached(Position e)
+        private void OnPositionReached(object sender, Position e)
         {
             switch (e)
             {
-                case Services.Position.Up:
+                case Position.Down:
                 {
-                    UpCount++;
+                    _downCount++;
                     break;
                 }
-                case Services.Position.Down:
+                case Position.Up:
                 {
-                    DownCount++;
+                    _upCount++;
                     break;
                 }
+            }
+        }
+
+        public async void OnSettingClick()
+        {
+            var viewModel = new SettingPageViewModel(_acceleratorReader, PushUpPositions);
+            await Navigation.PushAsync(new SettingsPage(viewModel));
+        }
+
+        public void LoadSavedPositionsAsync()
+        {
+            PushUpPositions positions = null; // Get from DB
+
+            if (positions == null)
+            {
+                var viewModel = new SettingPageViewModel(_acceleratorReader, PushUpPositions);
+                Navigation.PushAsync(new SettingsPage(viewModel));
             }
         }
     }

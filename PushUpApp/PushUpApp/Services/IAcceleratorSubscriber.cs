@@ -2,6 +2,6 @@
 {
     public interface IAcceleratorSubscriber
     {
-        void Update(IAcceleratorObtainer sender, object arg);
+        void Update(IAcceleratorObservable sender, object arg);
     }
 }
